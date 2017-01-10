@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RECEIVE_BOOT_COMPLETED_REQUEST_CODE = 1;
@@ -46,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setRequiresDeviceIdle(false);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         jobScheduler.schedule(builder.build());
+    }
+
+    public void cancelSche(View view)
+    {
+        if(jobScheduler != null)
+            jobScheduler.cancel(jobId);
     }
 
     @Override
