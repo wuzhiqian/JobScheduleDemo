@@ -14,31 +14,18 @@ import android.os.Bundle;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int RECEIVE_BOOT_COMPLETED_REQUEST_CODE = 1;
     int jobId = 1;
     JobScheduler jobScheduler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
-                != PackageManager.PERMISSION_GRANTED) {
-            //申请WRITE_EXTERNAL_STORAGE权限
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_BOOT_COMPLETED},
-                    RECEIVE_BOOT_COMPLETED_REQUEST_CODE);
-        }
-        else
-        {
-            doSchedule();
-        }
-
-
+        doSchedule();
     }
 
-    private void doSchedule()
-    {
+    private void doSchedule() {
         jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         JobInfo.Builder builder = new JobInfo.Builder(++jobId, new ComponentName(getPackageName(), JobSchedulerService.class.getName()));
         builder.setPeriodic(5000);
@@ -49,41 +36,10 @@ public class MainActivity extends AppCompatActivity {
         jobScheduler.schedule(builder.build());
     }
 
-    public void cancelSche(View view)
-    {
-        if(jobScheduler != null)
+    public void cancelSche(View view) {
+        if (jobScheduler != null)
             jobScheduler.cancel(jobId);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == RECEIVE_BOOT_COMPLETED_REQUEST_CODE)
-        {
-            boolean isGranted = true;
-            if(grantResults.length <= 0)
-                isGranted = false;
-            else {
-                for (int grant : grantResults) {
-                    if (grant != PackageManager.PERMISSION_GRANTED) {
-                        isGranted = false;
-                        break;
-                    }
-                }
-            }
-            if(isGranted)
-            {
-                doSchedule();
-            }
-            else
-            {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    //申请WRITE_EXTERNAL_STORAGE权限
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_BOOT_COMPLETED},
-                            RECEIVE_BOOT_COMPLETED_REQUEST_CODE);
-                }
-            }
-        }
-    }
+
 }
